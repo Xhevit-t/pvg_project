@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import os
 from assets import load_image, load_font
@@ -51,6 +53,9 @@ def start_game_screen(screen, clock):
 
         pygame.display.flip()
         clock.tick(60)
+
+
+
 
 def level_selection_screen(screen, clock, frames, level_status):
     print("Displaying level selection screen...")
@@ -141,7 +146,7 @@ def level_selection_screen(screen, clock, frames, level_status):
                             if completed:
                                 level_status[2] = "unlocked"
                         elif level == 2:
-                            completed = level_two_screen(screen, clock)
+                            completed = level(screen, clock)
                             if completed:
                                 level_status[3] = "unlocked"
 
@@ -189,5 +194,77 @@ def level_selection_screen(screen, clock, frames, level_status):
         screen.blit(info_button_image, info_button_rect.topleft)
         screen.blit(exit_button_image, exit_button_rect.topleft)
 
+        pygame.display.flip()
+        clock.tick(60)
+
+
+import pygame
+import sys
+import os
+
+
+def about_us_screen(screen, clock):
+    pygame.init()
+
+    # Define the base path for assets
+    base_path = os.path.join(os.path.dirname(__file__), 'assets')
+
+    # Load background image
+    background_image_path = os.path.join(base_path, 'images', 'background.jpg')
+    background_image = pygame.image.load(background_image_path)
+    background_image = pygame.transform.scale(background_image, screen.get_size())
+
+    # Load button image
+    button_image_path = os.path.join(base_path, 'images', 'Button.png')
+    button_image = pygame.image.load(button_image_path)
+    button_image = pygame.transform.scale(button_image, (200, 60))
+
+    # Define colors and fonts
+    white = (255, 255, 255)
+    font = pygame.font.Font(None, 60)
+    text_font = pygame.font.Font(None, 50)
+
+    # Define text content
+    about_text = (
+        "This game is made as a project for Programming Video Games course at FCSE. "
+        "By students Xhevit Tairi and Enes Sejfovski."
+    )
+
+    # Split the text for better readability
+    text_lines = about_text.split(". ")
+
+    # Back button rect and position
+    button_rect = button_image.get_rect(center=(screen.get_width() // 2, screen.get_height() - 200))
+
+    # Main loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    return start_game_screen(screen, clock)
+
+        # Draw background
+        screen.blit(background_image, (0, 0))
+
+        # Render and draw text
+        y_offset = screen.get_height() // 2 - 100
+        for line in text_lines:
+            text_surface = text_font.render(line, True, white)
+            text_rect = text_surface.get_rect(center=(screen.get_width() // 2, y_offset))
+            screen.blit(text_surface, text_rect)
+            y_offset += 60
+
+        # Draw button
+        screen.blit(button_image, button_rect.topleft)
+
+        # Render and draw button text
+        button_text = font.render("Back", True, white)
+        button_text_rect = button_text.get_rect(center=button_rect.center)
+        screen.blit(button_text, button_text_rect)
+
+        # Update the display and maintain frame rate
         pygame.display.flip()
         clock.tick(60)
