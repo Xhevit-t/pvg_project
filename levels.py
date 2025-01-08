@@ -4,7 +4,7 @@ import pygame
 from player import Ninja  # Import the Ninja class
 from constants import BLACK, WHITE, WIDTH
 
-def level_one_screen(screen, clock):
+def level_one_screen(screen, clock,level_status):
     # Load the new background image
     level_background = pygame.image.load('assets/images/level_background.png')
 
@@ -127,10 +127,10 @@ def level_one_screen(screen, clock):
         player_rect = player.rect
         exit_rect = pygame.Rect(world.exit_pos[0], world.exit_pos[1], tile_size, tile_size)
 
-        # Check if player's rect touches the exit door's rect (border proximity)
         if player_rect.colliderect(exit_rect.inflate(10, 10)):  # Inflate the exit door's rect for proximity detection
             print("Level Complete!")
-            run = False  # End the level
+            level_status[2] = "unlocked"  # Unlock Level 2
+            return True  # Return True to indicate level completion
 
         # Handle events
         for event in pygame.event.get():
@@ -138,8 +138,8 @@ def level_one_screen(screen, clock):
                 run = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    run = False  # Exit the game
+                    run = False
 
         pygame.display.update()
 
-    pygame.quit()
+    return False  # Return False if the user quits the level

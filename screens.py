@@ -137,18 +137,16 @@ def level_selection_screen(screen, clock, frames, level_status):
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
-                # Handle level buttons
                 for level, rect in level_buttons:
-                    if rect.collidepoint(mouse_pos) and level_status[level] == "unlocked":
+                    if level_status[level] == "unlocked":
                         print(f"Level {level} clicked!")
                         if level == 1:
-                            completed = level_one_screen(screen, clock)
+                            completed = level_one_screen(screen, clock, level_status)
                             if completed:
-                                level_status[2] = "unlocked"
+                                level_status[2] = "unlocked"  # Unlock Level 2
                         elif level == 2:
-                            completed = level(screen, clock)
-                            if completed:
-                                level_status[3] = "unlocked"
+                            # Add code for Level 2
+                            pass
 
                 # Handle Back Button
                 if back_button_rect.collidepoint(mouse_pos):
