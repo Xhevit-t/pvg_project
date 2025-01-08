@@ -198,10 +198,6 @@ def level_selection_screen(screen, clock, frames, level_status):
         clock.tick(60)
 
 
-import pygame
-import sys
-import os
-
 
 def about_us_screen(screen, clock):
     pygame.init()
