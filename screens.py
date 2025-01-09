@@ -5,7 +5,8 @@ import os
 from assets import load_image, load_font
 from helpers import render_text
 from constants import WIDTH, HEIGHT, WHITE, BLACK
-from levels import level_one_screen
+from levels import *
+
 
 def start_game_screen(screen, clock):
     background = load_image("background.jpg", (WIDTH, HEIGHT))
@@ -33,6 +34,7 @@ def start_game_screen(screen, clock):
                         # Initialize level_status: Only Level 1 unlocked
                         level_status = {i: "locked" for i in range(1, 11)}
                         level_status[1] = "unlocked"
+                        level_status[10] = "unlocked"
                         level_selection_screen(screen, clock, frames, level_status)
                 if about_us_btn.collidepoint(mouse_pos):
                     about_us_screen(screen, clock)
@@ -138,16 +140,48 @@ def level_selection_screen(screen, clock, frames, level_status):
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for level, rect in level_buttons:
-                    if level_status[level] == "unlocked":
+                    if rect.collidepoint(mouse_pos) and level_status[level] == "unlocked":
                         print(f"Level {level} clicked!")
                         if level == 1:
                             completed = level_one_screen(screen, clock, level_status)
                             if completed:
                                 level_status[2] = "unlocked"  # Unlock Level 2
                         elif level == 2:
-                            # Add code for Level 2
-                            pass
-
+                            completed = level_two_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[3] = "unlocked"
+                        elif level == 3:
+                            completed = level_three_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[4] = "unlocked"
+                        elif level == 4:
+                            completed = level_four_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[5] = "unlocked"
+                        elif level == 5:
+                            completed = level_five_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[6] = "unlocked"
+                        elif level == 6:
+                            completed = level_six_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[7] = "unlocked"
+                        elif level == 7:
+                            completed = level_seven_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[8] = "unlocked"
+                        elif level == 8:
+                            completed = level_eight_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[9] = "unlocked"
+                        elif level == 9:
+                            completed = level_nine_screen(screen, clock, level_status)
+                            if completed:
+                                level_status[10] = "unlocked"
+                        elif level == 10:
+                            completed = level_ten_screen(screen, clock, level_status)
+                            if completed:
+                                """ --- call to finished game screen """
                 # Handle Back Button
                 if back_button_rect.collidepoint(mouse_pos):
                     print("Back button clicked! Returning to start screen...")
