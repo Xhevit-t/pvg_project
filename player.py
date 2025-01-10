@@ -1,6 +1,7 @@
+import sys
+
 import pygame
 import os
-
 
 class Ninja:
     def __init__(self, x, y):
@@ -9,8 +10,8 @@ class Ninja:
     def reset(self, x, y):
         # Paths
         ninja_path = os.path.join('assets', 'images', 'ninja', 'png')
-        self.sprite_width = 40  # Standardized width for all sprites
-        self.sprite_height = 50  # Standardized height for all sprites
+        self.sprite_width = 40
+        self.sprite_height = 50
 
         # Load animations
         self.animations = {
@@ -26,25 +27,26 @@ class Ninja:
         self.counter = 0
         self.image = self.animations[self.current_animation][self.index]
         self.rect = self.image.get_rect()
+        self.rect.width = 30
+        self.rect.height = 45
+        self.rect.center = (x, y)
         self.rect.x = x
         self.rect.y = y
         self.vel_y = 0
         self.jumped = False
         self.in_air = True
-        self.direction = 1  # 1 = right, -1 = left
+        self.direction = 1
 
     def load_animation(self, path, prefix):
-        """Load a sequence of images for an animation."""
         images = []
-        for num in range(10):  # Assuming 10 frames per animation
+        for num in range(10):
             img_path = os.path.join(path, f"{prefix}{str(num).zfill(3)}.png")
             img = pygame.image.load(img_path)
-            # Resize all sprites to consistent dimensions
             img = pygame.transform.scale(img, (self.sprite_width, self.sprite_height))
             images.append(img)
         return images
 
-    def update(self, keys, tile_list):
+    def update(self, keys, tile_list, lava_tiles, blob_tiles, door_rect):
         dx = 0
         dy = 0
         walk_cooldown = 5
@@ -91,6 +93,10 @@ class Ninja:
         # Collision detection
         self.in_air = True
         for tile in tile_list:
+            # Skip the door tile from collision checks
+            if tile.colliderect(door_rect):  # Skip the door rect
+                continue
+
             # Collision in the x-direction
             if tile.colliderect(self.rect.x + dx, self.rect.y, self.rect.width, self.rect.height):
                 dx = 0
@@ -104,10 +110,32 @@ class Ninja:
                     self.vel_y = 0
                     self.in_air = False
 
+        # ✅ Check collision with lava tiles (player's feet)
+        for lava_rect in lava_tiles:
+            if (
+                    self.rect.bottom >= lava_rect.top - 5  # Allow small overlap
+                    and self.rect.bottom <= lava_rect.bottom
+                    and self.rect.centerx > lava_rect.left
+                    and self.rect.centerx < lava_rect.right
+            ):
+                print("Game Over! Player touched lava.")
+                pygame.quit()
+                sys.exit()
+
+        # ✅ Check collision with blob tiles (player's body)
+        for blob_rect in blob_tiles:
+            # Adjust the blob hitbox to make it smaller for better visuals
+            smaller_blob_rect = blob_rect.inflate(-10, -10)  # Reduce width and height by 10 pixels
+            if self.rect.colliderect(smaller_blob_rect):
+                print("Game Over! Player touched a blob.")
+                pygame.quit()
+                sys.exit()
+
         # Update position
         self.rect.x += dx
         self.rect.y += dy
 
+        return False
+
     def draw(self, screen):
-        """Draw the ninja on the screen."""
         screen.blit(self.image, self.rect)
