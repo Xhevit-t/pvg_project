@@ -13,3 +13,4 @@ clock = pygame.time.Clock()
 if __name__ == "__main__":
     start_game_screen(screen, clock)
     pygame.quit()
+                             

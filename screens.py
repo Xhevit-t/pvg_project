@@ -34,7 +34,7 @@ def start_game_screen(screen, clock):
                         # Initialize level_status: Only Level 1 unlocked
                         level_status = {i: "locked" for i in range(1, 11)}
                         level_status[1] = "unlocked"
-                        level_status[10] = "unlocked"
+                        level_status[5] = "unlocked"
                         level_selection_screen(screen, clock, frames, level_status)
                 if about_us_btn.collidepoint(mouse_pos):
                     about_us_screen(screen, clock)
