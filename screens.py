@@ -1,7 +1,7 @@
 import sys
-
 import pygame
 import os
+import textwrap
 from assets import load_image, load_font
 from helpers import render_text
 from constants import WIDTH, HEIGHT, WHITE, BLACK
@@ -12,8 +12,8 @@ def start_game_screen(screen, clock):
     background = load_image("background.jpg", (WIDTH, HEIGHT))
     button_bg = load_image("button.png", (300, 100))
 
-    title_font = load_font(size=100)
-    button_font = load_font(size=50)
+    title_font = load_font('freesansbold.ttf', size=100)
+    button_font = load_font('freesans.ttf',size=50)
 
     start_btn = pygame.Rect(WIDTH // 3 - 150, HEIGHT // 2, 300, 100)
     about_us_btn = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2, 300, 100)
@@ -42,7 +42,7 @@ def start_game_screen(screen, clock):
                     running = False
 
         screen.blit(background, (0, 0))
-        render_text(screen, "Escape The Maze", title_font, WHITE, (WIDTH // 2, HEIGHT // 3))
+        render_text(screen, "Ninja Jungle Game", title_font, WHITE, (WIDTH // 2, HEIGHT // 3))
 
         screen.blit(button_bg, start_btn.topleft)
         render_text(screen, "START", button_font, WHITE, start_btn.center)
@@ -56,11 +56,9 @@ def start_game_screen(screen, clock):
         pygame.display.flip()
         clock.tick(60)
 
-
-
-
 def level_selection_screen(screen, clock, frames, level_status):
     print("Displaying level selection screen...")
+    level_status[10] = "unlocked"
 
     # Load the background
     background_path = os.path.join('assets', 'images', 'background.jpg')
@@ -181,7 +179,7 @@ def level_selection_screen(screen, clock, frames, level_status):
                         elif level == 10:
                             completed = level_ten_screen(screen, clock, level_status)
                             if completed:
-                                """ --- call to finished game screen """
+                                game_finish_screen(screen, clock)
                 # Handle Back Button
                 if back_button_rect.collidepoint(mouse_pos):
                     print("Back button clicked! Returning to start screen...")
@@ -198,7 +196,7 @@ def level_selection_screen(screen, clock, frames, level_status):
                 # Handle Info Button
                 if info_button_rect.collidepoint(mouse_pos):
                     print("Info button clicked! Opening About Us screen...")
-                    about_us_screen(screen, clock)
+                    how_to_play_screen(screen, clock)
                     return
 
                 # Handle Exit Button
@@ -228,8 +226,6 @@ def level_selection_screen(screen, clock, frames, level_status):
 
         pygame.display.flip()
         clock.tick(60)
-
-
 
 def about_us_screen(screen, clock):
     pygame.init()
@@ -290,6 +286,148 @@ def about_us_screen(screen, clock):
 
         # Render and draw button text
         button_text = font.render("Back", True, white)
+        button_text_rect = button_text.get_rect(center=button_rect.center)
+        screen.blit(button_text, button_text_rect)
+
+        # Update the display and maintain frame rate
+        pygame.display.flip()
+        clock.tick(60)
+
+def how_to_play_screen(screen, clock):
+    print("How to? screen showing")
+
+    pygame.init()
+
+    # Define the base path for assets
+    base_path = os.path.join(os.path.dirname(__file__), 'assets')
+
+    # Load background image
+    background_image_path = os.path.join(base_path, 'images', 'background.jpg')
+    background_image = pygame.image.load(background_image_path)
+    background_image = pygame.transform.scale(background_image, screen.get_size())
+
+    # Load button image
+    button_image_path = os.path.join(base_path, 'images', 'Button.png')
+    button_image = pygame.image.load(button_image_path)
+    button_image = pygame.transform.scale(button_image, (200, 60))
+
+    # Define colors and fonts
+    white = (255, 255, 255)
+    text_font = pygame.font.Font("freesansbold.ttf", 50)  # FreeSans font for text
+    button_font = pygame.font.Font("freesansbold.ttf", 40)  # Smaller font for button text
+
+    # Define text content
+    about_text = (
+        "Welcome to the NinjaJungle Game. "
+        "Your goal is to navigate through the maze and reach the exit door. "
+        "Use the arrow keys to move left and right. Press the space key to jump. "
+        "Collect as many coins as you can to unlock new characters."
+    )
+
+    # Split the text into multiple lines within 800px width
+    max_width = 800
+    text_lines = []
+    for paragraph in about_text.split(". "):
+        wrapped_lines = textwrap.wrap(paragraph, width=40)  # Adjust width to fit within 800px
+        text_lines.extend(wrapped_lines)
+
+    # Calculate total text height
+    line_height = text_font.get_height()
+    total_text_height = len(text_lines) * line_height
+
+    # Start drawing position (centered vertically)
+    start_y = (screen.get_height() - total_text_height) // 2
+
+    # Back button rect and position
+    button_rect = button_image.get_rect(center=(screen.get_width() // 2, screen.get_height() - 200))
+
+    # Main loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    return  # Replace with actual screen transition function
+
+        # Draw background
+        screen.blit(background_image, (0, 0))
+
+        # Render and draw text (centered horizontally)
+        y_offset = start_y
+        for line in text_lines:
+            text_surface = text_font.render(line, True, white)
+            text_rect = text_surface.get_rect(center=(screen.get_width() // 2, y_offset))
+            screen.blit(text_surface, text_rect)
+            y_offset += line_height + 5  # Line spacing
+
+        # Draw button
+        screen.blit(button_image, button_rect.topleft)
+
+        # Render and draw button text (smaller size)
+        button_text = button_font.render("Back", True, white)
+        button_text_rect = button_text.get_rect(center=button_rect.center)
+        screen.blit(button_text, button_text_rect)
+
+        # Update the display and maintain frame rate
+        pygame.display.flip()
+        clock.tick(60)
+
+def game_finish_screen(screen, clock):
+    print("Game Finished Screen showing")
+
+    pygame.init()
+
+    # Define the base path for assets
+    base_path = os.path.join(os.path.dirname(__file__), 'assets')
+
+    # Load background image
+    background_image_path = os.path.join(base_path, 'images', 'background.jpg')
+    background_image = pygame.image.load(background_image_path)
+    background_image = pygame.transform.scale(background_image, screen.get_size())
+
+    # Load button image
+    button_image_path = os.path.join(base_path, 'images', 'Button.png')
+    button_image = pygame.image.load(button_image_path)
+    button_image = pygame.transform.scale(button_image, (200, 60))
+
+    # Define colors and fonts
+    white = (255, 255, 255)
+    text_font = pygame.font.Font("freesansbold.ttf", 50)  # FreeSans font for main text
+    button_font = pygame.font.Font("freesansbold.ttf", 40)  # Smaller font for button text
+
+    # Define text content
+    message = "Congratulations! You finished all the levels."
+
+    # Get text surface and position it in the center
+    text_surface = text_font.render(message, True, white)
+    text_rect = text_surface.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
+
+    # Back button rect and position
+    button_rect = button_image.get_rect(center=(screen.get_width() // 2, screen.get_height() - 200))
+
+    # Main loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    return  # Replace with actual screen transition function
+
+        # Draw background
+        screen.blit(background_image, (0, 0))
+
+        # Draw the text in the middle of the screen
+        screen.blit(text_surface, text_rect)
+
+        # Draw button
+        screen.blit(button_image, button_rect.topleft)
+
+        # Render and draw button text
+        button_text = button_font.render("Back", True, white)
         button_text_rect = button_text.get_rect(center=button_rect.center)
         screen.blit(button_text, button_text_rect)
 
