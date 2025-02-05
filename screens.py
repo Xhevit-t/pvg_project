@@ -388,6 +388,7 @@ def level_selection_screen(screen, clock, frames, level_status):
         pygame.display.flip()
         clock.tick(60)
 
+"""
 def store_screen(screen, clock):
     print("store screen called")
 
@@ -439,7 +440,115 @@ def store_screen(screen, clock):
 
         pygame.display.flip()
         clock.tick(60)
+"""
 
+def store_screen(screen, clock):
+    print("store screen called")
+
+    pygame.init()
+
+    # Define the base path for assets
+    base_path = os.path.join(os.path.dirname(__file__), 'assets')
+
+    # Load images
+    background_image_path = os.path.join(base_path, 'images', 'background.jpg')
+    info_box_image_path = os.path.join(base_path, 'images', 'shop_box.png')
+    button_image_path = os.path.join(base_path, 'images', 'Button.png')
+    ninja_image_path = os.path.join(base_path, 'images', 'ninja', 'png', 'Idle__000.png')
+
+    background_image = pygame.image.load(background_image_path)
+    background_image = pygame.transform.scale(background_image, screen.get_size())
+    info_box_image = pygame.image.load(info_box_image_path)
+    info_box_image = pygame.transform.scale(info_box_image, (1150, 700))
+    button_image = pygame.image.load(button_image_path)
+    button_image = pygame.transform.scale(button_image, (200, 80))
+    # Smaller buttons
+    smaller_button_image = pygame.image.load(button_image_path)
+    smaller_button_image = pygame.transform.scale(smaller_button_image, (150, 40))
+
+    ninja_image = pygame.image.load(ninja_image_path)
+    ninja_image = pygame.transform.scale(ninja_image, (60, 80))
+
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    text_font = pygame.font.Font(None, 25)
+    button_font = pygame.font.Font(None, 60)
+    # Adjusted font size for smaller buttons
+
+    button_rect = button_image.get_rect(center=(screen.get_width() // 2, screen.get_height() - 200))
+
+    # Draw white rectangles on the info_box_image
+    info_box_image_rect = info_box_image.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
+    rect1 = pygame.Rect(410, 250, 150, 250)
+    rect2 = pygame.Rect(570, 250, 150, 250)
+    pygame.draw.rect(info_box_image, white, rect1)  # First white rectangle
+    pygame.draw.rect(info_box_image, white, rect2)  # Second white rectangle
+
+    # Add text inside the rectangles
+    ninja1_text = text_font.render("Ninja 1", True, black)
+    ninja2_text = text_font.render("Ninja 2", True, black)
+
+    info_box_image.blit(ninja1_text, (465, 370))  # Position inside first rectangle
+    info_box_image.blit(ninja2_text, (615, 370))  # Position inside second rectangle
+
+    # Add ninja images inside rectangles
+    info_box_image.blit(ninja_image, (455, 260))  # Position inside first rectangle
+
+    #TODO:
+    """    
+        Load the ninja2 image as ninja1 above on line 457 and change the name of the image on line 501
+    """
+    info_box_image.blit(ninja_image, (605, 260))  # Position inside second rectangle
+
+    # Create buttons
+    select_button_rect = smaller_button_image.get_rect(center=(875, 675))
+    buy_button_rect = smaller_button_image.get_rect(center=(1037, 640))
+    select_button2_rect = smaller_button_image.get_rect(center=(1037, 675))
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    return
+                elif select_button_rect.collidepoint(event.pos):
+                    select_skin(screen, clock)
+                elif select_button2_rect.collidepoint(event.pos):
+                    select_skin(screen, clock)
+                elif buy_button_rect.collidepoint(event.pos):
+                    buy_skin(screen, clock)
+
+        # Draw background
+        screen.blit(background_image, (0, 0))
+        screen.blit(info_box_image, info_box_image_rect.topleft)
+        screen.blit(button_image, button_rect.topleft)
+
+        # Render and draw button text in white
+        button_text = button_font.render("Back", True, white)
+        button_text_rect = button_text.get_rect(center=button_rect.center)
+        screen.blit(button_text, button_text_rect)
+
+        # Draw buttons inside rectangles
+        screen.blit(smaller_button_image, select_button_rect.topleft)
+        select_text = text_font.render("Select", True, white)
+        select_text_rect = select_text.get_rect(center=select_button_rect.center)
+        screen.blit(select_text, select_text_rect)
+
+        screen.blit(smaller_button_image, buy_button_rect.topleft)
+        buy_text = text_font.render("Buy", True, white)
+        buy_text_rect = buy_text.get_rect(center=buy_button_rect.center)
+        screen.blit(buy_text, buy_text_rect)
+
+        screen.blit(smaller_button_image, select_button2_rect.topleft)
+        select_text2 = text_font.render("Select", True, white)
+        select_text2_rect = select_text2.get_rect(center=select_button2_rect.center)
+        screen.blit(select_text2, select_text2_rect)
+
+
+        pygame.display.flip()
+        clock.tick(60)
 
 
 def about_us_screen(screen, clock):
@@ -670,3 +779,9 @@ def game_finish_screen(screen, clock):
         # Update the display and maintain frame rate
         pygame.display.flip()
         clock.tick(60)
+
+def select_skin(screen, clock):
+    print("skin selecting button clicked")
+
+def buy_skin(screen, clock):
+    print("skin buy button clicked")
