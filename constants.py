@@ -11,3 +11,6 @@ ASSETS_DIR = "assets"
 IMAGES_DIR = f"{ASSETS_DIR}/images"
 SOUNDS_DIR = f"{ASSETS_DIR}/sounds"
 GIFS_DIR = f"{ASSETS_DIR}/gifs"
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)

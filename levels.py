@@ -1,14 +1,11 @@
 import sys
 import random
 import pygame
+import os
 
-# Import the Ninja player class from player.py
 from player import Ninja
-
-# Import the global coin data
 import game_data
 
-# Global constants
 tile_size = 50
 screen_width = 1920
 screen_height = 1080
@@ -112,18 +109,15 @@ class Blob:
     def update(self):
         next_rect = self.rect.copy()
         next_rect.x += self.direction
-
         collided = False
         for tile_rect in self.solid_tiles:
             if next_rect.colliderect(tile_rect):
                 collided = True
                 break
-
         if collided:
             self.direction *= -1
         else:
             self.rect = next_rect
-
         if self.rect.x > self.start_x + self.move_range or self.rect.x < self.start_x:
             self.direction *= -1
 
@@ -139,7 +133,6 @@ class World:
         self.spawn_pos = None
         self.exit_pos = None
         self.solid_tiles = []
-
         dirt_img = pygame.image.load('assets/images/dirt.png')
         grass_img = pygame.image.load('assets/images/grass.png')
         exit_img = pygame.image.load('assets/images/door.png')
@@ -150,43 +143,35 @@ class World:
             for col_count, tile in enumerate(row):
                 x = offset_x + col_count * tile_size
                 y = offset_y + row_count * tile_size
-
                 if tile == 1:
                     img = pygame.transform.scale(dirt_img, (tile_size, tile_size))
                     rect = img.get_rect(topleft=(x, y))
                     self.tile_list.append((img, rect))
                     self.solid_tiles.append(rect)
-
                 elif tile == 2:
                     img = pygame.transform.scale(grass_img, (tile_size, tile_size))
                     rect = img.get_rect(topleft=(x, y))
                     self.tile_list.append((img, rect))
                     self.solid_tiles.append(rect)
-
                 elif tile == 3:
                     blob = Blob(x, y, BLOB_MOVE_RANGE, self.solid_tiles)
                     self.blobs.append(blob)
-
                 elif tile == 4:
                     img = pygame.transform.scale(lava_img, (tile_size, tile_size))
                     rect = img.get_rect(topleft=(x, y))
                     self.lava_tiles.append(rect)
                     self.tile_list.append((img, rect))
-
                 elif tile == 5:
                     img = pygame.transform.scale(coin_img, (35, 35))
                     coin_rect = img.get_rect(topleft=(x, y))
                     self.coins.append((img, coin_rect))
-
                 elif tile == 7:
                     img = pygame.transform.scale(exit_img, (tile_size, tile_size))
                     rect = img.get_rect(topleft=(x, y))
                     self.exit_pos = (x, y)
                     self.tile_list.append((img, rect))
-
                 elif tile == 9:
                     self.spawn_pos = (x, y)
-
         if self.spawn_pos is None:
             raise ValueError("No spawn position (tile=9) found in level data.")
 
@@ -200,27 +185,20 @@ class World:
 
 def run_level(screen, clock, level_background, world_data, level_status, next_level):
     print("DEBUG: Entered run_level()")
+    print(f"[DEBUG] Selected skin: {game_data.selected_skin}")
     offset_x = (screen_width - 1000) // 2
     offset_y = (screen_height - 800) // 2
-
-    # Create world and player
     world = World(world_data, offset_x, offset_y)
-    player = Ninja(*world.spawn_pos)
-
+    # Create the player using the currently selected skin.
+    player = Ninja(*world.spawn_pos, skin=game_data.selected_skin)
     level_coins = 0
     font = pygame.font.SysFont(None, 36)
-
     run = True
     while run:
-        # Draw background and world
         screen.blit(pygame.transform.scale(level_background, (screen_width, screen_height)), (0, 0))
         world.draw(screen)
-
-        # Update blobs
         for blob in world.blobs:
             blob.update()
-
-        # Check coin collisions
         for i in range(len(world.coins) - 1, -1, -1):
             coin_img, coin_rect = world.coins[i]
             if player.rect.colliderect(coin_rect):
@@ -228,8 +206,6 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
                 level_coins += 1
                 game_data.coins_collected += 1
                 print(f"DEBUG: Player picked a coin -> level: {level_coins}, global: {game_data.coins_collected}")
-
-        # Build door rect if an exit exists
         door_rect = None
         if world.exit_pos:
             door_rect = pygame.Rect(
@@ -238,8 +214,6 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
                 tile_size - 20,
                 tile_size - 10
             )
-
-        # Update player and check for game over
         game_over = player.update(
             keys=pygame.key.get_pressed(),
             tile_list=[tile[1] for tile in world.tile_list],
@@ -250,29 +224,19 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
         if game_over:
             print("Game Over! Player died.")
             return False
-
-        # Check door collision (level complete)
         if door_rect and player.rect.colliderect(door_rect):
             print("Level Completed!")
             return True
-
-        # Draw the player
         player.draw(screen)
-
-        # Draw the coin counters on a magenta background in the bottom‐right
         text_bg_rect = pygame.Rect(screen_width - 400, screen_height - 150, 350, 100)
         pygame.draw.rect(screen, (255, 0, 255), text_bg_rect)
         level_text = font.render(f"Coins this level: {level_coins}", True, (0, 0, 0))
         screen.blit(level_text, (screen_width - 390, screen_height - 140))
         global_text = font.render(f"Total Coins: {game_data.coins_collected}", True, (0, 0, 0))
         screen.blit(global_text, (screen_width - 390, screen_height - 100))
-
-        # Optionally draw bounding boxes for debugging
         pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
         if door_rect:
             pygame.draw.rect(screen, (0, 255, 0), door_rect, 2)
-
-        # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -280,11 +244,10 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 run = False
-
         pygame.display.update()
         clock.tick(60)
-
     return False
+
 def level_one_screen(screen, clock, level_status):
     level_background = pygame.image.load('assets/images/level_background.png')
     world_data = [
