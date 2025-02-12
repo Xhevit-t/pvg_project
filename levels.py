@@ -227,13 +227,15 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
             print("Level Completed!")
             return True
         player.draw(screen)
-        text_bg_rect = pygame.Rect(screen_width - 400, screen_height - 150, 350, 100)
+        pygame.font.init()
+        font = pygame.font.Font(None, 36)
+        text_bg_rect = pygame.Rect(screen_width - 600, screen_height - 180, 175, 100)
         pygame.draw.rect(screen, (1, 50, 32), text_bg_rect)
-        level_text = font.render(f"Coins this level: {level_coins}", True, (0, 0, 0))
-        screen.blit(level_text, (screen_width - 390, screen_height - 140))
-        global_text = font.render(f"Total Coins: {game_data.coins_collected}", True, (0, 0, 0))
-        screen.blit(global_text, (screen_width - 390, screen_height - 100))
-
+        #level_text = font.render(f"Coins this level: {level_coins}", True, (0, 0, 0))
+        #screen.blit(level_text, (screen_width - 590, screen_height - 160))
+        global_text = font.render(f"Coins: {game_data.coins_collected}", True, (255, 255, 255))
+        screen.blit(global_text, (screen_width - 590, screen_height - 150))
+        pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
