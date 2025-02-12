@@ -4,17 +4,17 @@ import os
 
 class Ninja:
     def __init__(self, x, y, skin="ninja"):
-        self.skin = skin  # "ninja" or "ninjagirlnew"
+        self.skin = skin
         print(f"[DEBUG] Creating Ninja with skin: {self.skin}")
         self.reset(x, y)
 
     def reset(self, x, y):
-        # Build the asset folder path based on the selected skin
+
         ninja_path = os.path.join('assets', 'images', self.skin, 'png')
         self.sprite_width = 40
         self.sprite_height = 50
 
-        # Load animations from the appropriate folder
+
         self.animations = {
             "run": self.load_animation(ninja_path, "Run__"),
             "idle": self.load_animation(ninja_path, "Idle__"),
@@ -22,7 +22,7 @@ class Ninja:
             "attack": self.load_animation(ninja_path, "Attack__")
         }
 
-        # Initialize attributes
+
         self.current_animation = "idle"
         self.index = 0
         self.counter = 0
@@ -69,7 +69,7 @@ class Ninja:
             self.direction = 1
             self.current_animation = "run"
         if keys[pygame.K_SPACE] and not self.jumped and not self.in_air:
-            self.vel_y = -15  # Jump velocity
+            self.vel_y = -15
             self.jumped = True
             self.current_animation = "jump"
         if not keys[pygame.K_SPACE]:

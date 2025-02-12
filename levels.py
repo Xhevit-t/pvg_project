@@ -189,7 +189,6 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
     offset_x = (screen_width - 1000) // 2
     offset_y = (screen_height - 800) // 2
     world = World(world_data, offset_x, offset_y)
-    # Create the player using the currently selected skin.
     player = Ninja(*world.spawn_pos, skin=game_data.selected_skin)
     level_coins = 0
     font = pygame.font.SysFont(None, 36)
@@ -229,14 +228,12 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
             return True
         player.draw(screen)
         text_bg_rect = pygame.Rect(screen_width - 400, screen_height - 150, 350, 100)
-        pygame.draw.rect(screen, (255, 0, 255), text_bg_rect)
+        pygame.draw.rect(screen, (1, 50, 32), text_bg_rect)
         level_text = font.render(f"Coins this level: {level_coins}", True, (0, 0, 0))
         screen.blit(level_text, (screen_width - 390, screen_height - 140))
         global_text = font.render(f"Total Coins: {game_data.coins_collected}", True, (0, 0, 0))
         screen.blit(global_text, (screen_width - 390, screen_height - 100))
-        #pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
-        #if door_rect:
-            #pygame.draw.rect(screen, (0, 255, 0), door_rect, 2)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -316,7 +313,7 @@ def level_four_screen(screen, clock, level_status):
         [1, 0, 0, 0, 0, 9, 1, 2, 0, 1, 0, 0, 0, 5, 0, 0, 0, 5, 0, 1],
         [1, 0, 2, 2, 2, 2, 1, 0, 0, 1, 0, 2, 2, 2, 2, 2, 2, 2, 2, 1],
         [1, 0, 5, 0, 5, 0, 5, 0, 2, 1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 1],
-        [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1],
+        [1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 7, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 1],
         [1, 0, 0, 0, 2, 2, 2, 2, 1, 0, 0, 5, 0, 0, 5, 0, 0, 1, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 2, 2, 2, 2, 2, 0, 1, 5, 1],
@@ -328,9 +325,7 @@ def level_four_screen(screen, clock, level_status):
     ]
     return run_level(screen, clock, level_background, world_data, level_status, next_level=4)
 
-#
-# --------------- LEVEL FIVE & SIX with RANDOM BLOBS ---------------
-#
+
 def level_five_screen(screen, clock, level_status):
     level_background = pygame.image.load('assets/images/level_background.png')
     world_data = [
@@ -351,7 +346,7 @@ def level_five_screen(screen, clock, level_status):
         [1, 9, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1],
         [1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]
-    # Randomly place, say, 3 blobs
+
     return run_level(screen, clock, level_background, world_data, level_status, next_level=6)
 
 def level_six_screen(screen, clock, level_status):
@@ -375,13 +370,11 @@ def level_six_screen(screen, clock, level_status):
         [1, 9, 0, 0, 0, 2, 2, 2, 2, 4, 4, 2, 2, 2, 4, 4, 2, 2, 2, 1],
         [1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]
-    # Randomly place, say, 3 blobs again
+
 
     return run_level(screen, clock, level_background, world_data, level_status, next_level=7)
 
-#
-# --------------- LEVEL 7, 8, 9, 10 ---------------
-#
+
 def level_seven_screen(screen, clock, level_status):
     level_background = pygame.image.load('assets/images/level_background.png')
     base_world_data = [

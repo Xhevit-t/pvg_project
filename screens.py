@@ -27,7 +27,7 @@ def start_game_screen(screen, clock):
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_btn.collidepoint(mouse_pos):
-                    # Create level status with level 1 unlocked.
+
                     frames = [pygame.Surface((150, 150)) for _ in range(10)]
                     for frame in frames:
                         frame.fill((128, 128, 128))
@@ -126,14 +126,14 @@ def level_selection_screen(screen, clock, frames, level_status):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button_rect.collidepoint(mouse_pos):
                     print("Back button clicked! Returning to start screen...")
-                    return  # Go back to the home screen.
+                    return
                 if play_button_rect.collidepoint(mouse_pos):
                     print("Play button clicked!")
-                    return  # (You can add functionality here if needed.)
+                    return
                 if info_button_rect.collidepoint(mouse_pos):
                     print("Info button clicked! Opening How To Play screen...")
                     how_to_play_screen(screen, clock)
-                    # Continue showing the level selection screen afterward.
+
                 if exit_button_rect.collidepoint(mouse_pos):
                     print("Exit button clicked! Exiting the game...")
                     pygame.quit()
@@ -141,15 +141,15 @@ def level_selection_screen(screen, clock, frames, level_status):
                 if store_button_rect.collidepoint(mouse_pos):
                     print("Store button clicked! Opening store screen...")
                     store_screen(screen, clock)
-                    # After store, continue level selection.
-                # Process a level button click:
+
+
                 for level, rect in level_buttons:
                     if rect.collidepoint(mouse_pos) and level_status[level] == "unlocked":
                         print(f"Level {level} clicked!")
                         if level == 1:
                             completed = level_one_screen(screen, clock, level_status)
                             if completed:
-                                level_status[2] = "unlocked"  # Unlock Level 2
+                                level_status[2] = "unlocked"
                         elif level == 2:
                             completed = level_two_screen(screen, clock, level_status)
                             if completed:
@@ -186,8 +186,8 @@ def level_selection_screen(screen, clock, frames, level_status):
                             completed = level_ten_screen(screen, clock, level_status)
                             if completed:
                                 game_finish_screen(screen, clock)
-                        # Do not return—stay in the level selection screen after finishing a level.
-                        break  # Break out of the for‑loop so that one click is processed only once.
+
+                        break
 
         screen.blit(background, (0, 0))
         screen.blit(box_image, (box_x, box_y))
@@ -205,8 +205,6 @@ def level_selection_screen(screen, clock, frames, level_status):
         screen.blit(store_button_image, store_button_rect.topleft)
         pygame.display.flip()
         clock.tick(60)
-
-
 
 def about_us_screen(screen, clock):
     pygame.init()
@@ -353,13 +351,13 @@ def store_screen(screen, clock):
     pygame.init()
     base_path = os.path.join(os.path.dirname(__file__), 'assets')
 
-    # Load images
+
     background_image_path = os.path.join(base_path, 'images', 'background.jpg')
     info_box_image_path = os.path.join(base_path, 'images', 'shop_box.png')
     button_image_path = os.path.join(base_path, 'images', 'Button.png')
-    # Default skin image (left card)
+
     default_image_path = os.path.join(base_path, 'images', 'ninja', 'png', 'Idle__000.png')
-    # Alternative skin image (right card) – note the folder change.
+
     alternative_image_path = os.path.join(base_path, 'images', 'ninjagirlnew', 'png', 'Idle__000.png')
 
     background_image = pygame.image.load(background_image_path)
@@ -370,7 +368,7 @@ def store_screen(screen, clock):
 
     button_image = pygame.image.load(button_image_path)
     button_image = pygame.transform.scale(button_image, (200, 80))
-    # Smaller button for card actions
+
     smaller_button_image = pygame.image.load(button_image_path)
     smaller_button_image = pygame.transform.scale(smaller_button_image, (150, 40))
 
@@ -379,42 +377,39 @@ def store_screen(screen, clock):
     alternative_image = pygame.image.load(alternative_image_path)
     alternative_image = pygame.transform.scale(alternative_image, (60, 80))
 
-    # Colors and fonts
+
     black = (0, 0, 0)
     white = (255, 255, 255)
     text_font = pygame.font.Font(None, 25)
-    button_font = pygame.font.Font(None, 40)  # Font size reduced to 40
+    button_font = pygame.font.Font(None, 40)
 
-    # Back button (original position)
+
     back_button_rect = button_image.get_rect(center=(screen.get_width() // 2, screen.get_height() - 200))
 
-    # Get the info box rect centered on screen
+
     info_box_rect = info_box_image.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2))
 
-    # Make a copy of the info box for drawing our card layout.
+
     store_box = info_box_image.copy()
 
-    # Draw two white rectangles (cards) on the info box.
-    # Left card for the default skin:
+
     default_card_rect = pygame.Rect(410, 250, 150, 250)
-    # Right card for the alternative skin:
+
     alternative_card_rect = pygame.Rect(570, 250, 150, 250)
     pygame.draw.rect(store_box, white, default_card_rect)
     pygame.draw.rect(store_box, white, alternative_card_rect)
 
-    # Label the cards.
+
     store_box.blit(text_font.render("Ninja 1", True, black), (465, 370))
     store_box.blit(text_font.render("Ninja 2", True, black), (615, 370))
 
-    # Blit the skin images.
+
     store_box.blit(default_image,
                    default_image.get_rect(center=(default_card_rect.centerx, default_card_rect.top + 50)))
     store_box.blit(alternative_image,
                    alternative_image.get_rect(center=(alternative_card_rect.centerx, alternative_card_rect.top + 50)))
 
-    # Define button rects for the two cards.
-    # We want them to be in one row, so use the same y coordinate.
-    # Adjust x positions as needed:
+
     default_button_rect = smaller_button_image.get_rect(center=(875, 640))
     alternative_button_rect = smaller_button_image.get_rect(center=(1037, 640))
 
@@ -426,12 +421,12 @@ def store_screen(screen, clock):
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if back_button_rect.collidepoint(event.pos):
                     return
-                # Default card: always allow selecting the free/default skin.
+
                 if default_button_rect.collidepoint(event.pos):
                     import game_data
                     game_data.selected_skin = "ninja"
                     print("Default skin selected.")
-                # Alternative card:
+
                 if alternative_button_rect.collidepoint(event.pos):
                     import game_data
                     if not game_data.alternative_skin_bought:
@@ -445,19 +440,19 @@ def store_screen(screen, clock):
                         game_data.selected_skin = "ninjagirlnew"
                         print("Alternative skin selected.")
 
-        # Render the screen.
+
         screen.blit(background_image, (0, 0))
         screen.blit(store_box, info_box_rect.topleft)
         screen.blit(button_image, back_button_rect.topleft)
         back_text = button_font.render("Back", True, white)
         screen.blit(back_text, back_text.get_rect(center=back_button_rect.center))
 
-        # Draw the default card's button (always "Select")
+
         screen.blit(smaller_button_image, default_button_rect.topleft)
         default_btn_text = button_font.render("Select", True, white)
         screen.blit(default_btn_text, default_btn_text.get_rect(center=default_button_rect.center))
 
-        # For the alternative card:
+
         import game_data
         if game_data.alternative_skin_bought:
             screen.blit(smaller_button_image, alternative_button_rect.topleft)
@@ -472,7 +467,7 @@ def store_screen(screen, clock):
                 locked_text = button_font.render("Locked", True, white)
                 screen.blit(locked_text, locked_text.get_rect(center=alternative_button_rect.center))
 
-        # Display coin count.
+
         coin_info = text_font.render(f"Coins: {game_data.coins_collected}", True, white)
         screen.blit(coin_info, (50, 50))
 
@@ -493,7 +488,7 @@ def buy_skin(screen, clock):
 def select_skin(screen, clock):
     import game_data
     if game_data.alternative_skin_bought:
-        # Toggle skin: if currently "ninjagirlnew", switch back to "ninja"; else, change to "ninjagirlnew"
+
         if game_data.selected_skin == "ninjagirlnew":
             game_data.selected_skin = "ninja"
             print("Select skin button clicked: Skin changed to 'ninja'.")
