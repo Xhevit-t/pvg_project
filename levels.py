@@ -234,9 +234,9 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
         screen.blit(level_text, (screen_width - 390, screen_height - 140))
         global_text = font.render(f"Total Coins: {game_data.coins_collected}", True, (0, 0, 0))
         screen.blit(global_text, (screen_width - 390, screen_height - 100))
-        pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
-        if door_rect:
-            pygame.draw.rect(screen, (0, 255, 0), door_rect, 2)
+        #pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
+        #if door_rect:
+            #pygame.draw.rect(screen, (0, 255, 0), door_rect, 2)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False

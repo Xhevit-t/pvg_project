@@ -14,5 +14,5 @@ def load_sound(filename):
     return sound
 
 def load_font(filename='freesans', size=30):
-    #return pygame.font.Font(filename, size) if filename else pygame.font.Font(None, size)
+
     return pygame.font.SysFont(filename, size) if filename else pygame.font.SysFont(None, size)
