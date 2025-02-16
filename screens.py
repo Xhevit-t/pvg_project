@@ -348,7 +348,7 @@ def game_finish_screen(screen, clock):
 
 def store_screen(screen, clock):
     print("Store screen called")
-    pygame.init()
+
     base_path = os.path.join(os.path.dirname(__file__), 'assets')
 
 
@@ -431,6 +431,7 @@ def store_screen(screen, clock):
                     import game_data
                     if not game_data.alternative_skin_bought:
                         if game_data.coins_collected >= 25:
+                            game_data.coins_collected -= 25
                             game_data.alternative_skin_bought = True
                             game_data.selected_skin = "ninjagirlnew"
                             print("Alternative skin bought and selected.")
@@ -488,7 +489,6 @@ def buy_skin(screen, clock):
 def select_skin(screen, clock):
     import game_data
     if game_data.alternative_skin_bought:
-
         if game_data.selected_skin == "ninjagirlnew":
             game_data.selected_skin = "ninja"
             print("Select skin button clicked: Skin changed to 'ninja'.")

@@ -204,6 +204,10 @@ def run_level(screen, clock, level_background, world_data, level_status, next_le
                 world.coins.pop(i)
                 level_coins += 1
                 game_data.coins_collected += 1
+                coin_sound = pygame.mixer.Sound("assets/sounds/coin.mp3")
+                coin_sound.set_volume(0.5)
+                coin_sound.play()
+
                 print(f"DEBUG: Player picked a coin -> level: {level_coins}, global: {game_data.coins_collected}")
         door_rect = None
         if world.exit_pos:
